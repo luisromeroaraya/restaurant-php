@@ -24,7 +24,7 @@ Sadly, he can only pay you for a week of work, which won’t be enough time to i
 * improve the design (if you have time)
 * use whatever technology you want
 
- Note | You don’t have to fill any form for this project, as it’s a learning challenge. However, if you feel it could unlock badges you can try to claim them with it.
+| Note | You don’t have to fill any form for this project, as it’s a learning challenge. However, if you feel it could unlock badges you can try to claim them with it. |
 
 ## Features
 ### Back office
