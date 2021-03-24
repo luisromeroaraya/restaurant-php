@@ -83,7 +83,7 @@ session_start();
                             </div>
                         </div>
                         <div class="col-12 table-responsive min-vh-100" id="phpContact">
-                            <table class="table bg-white table-hover border border-dark">
+                            <table class="table bg-white table-hover border border-dark text-start">
                                 <thead>
                                     <tr>
                                     <th scope="col">Date</th>
@@ -104,7 +104,14 @@ session_start();
                                 </tr>
                                 <tbody>
                                     <?php
-                                    include "php/contact.php";
+                                    // open database
+                                    try {
+                                        $db = new PDO('mysql:host=database;dbname=restaurant;charset=utf8', 'root', 'root');
+                                    } catch (Exception $e) {
+                                        die('Erreur : ' . $e->getMessage());
+                                    }
+                                    $dbContacts = $db->query('SELECT * FROM contact');
+                                    // IF addContact button has been clicked
                                     if (isset($_POST['addContact'])) {
                                         $date = $_POST['date'];
                                         $name = $_POST['name'];
@@ -115,6 +122,7 @@ session_start();
                                         echo "<script type='text/javascript'>function toggleContact(){phpContact.classList.remove('hidden');btnContact.classList.add('active');btnBookings.classList.remove('active');btnGallery.classList.remove('active');}toggleContact();</script>";
                                         echo "<h4 class='text-left text-success'>Contact added.</h4>";
                                     }
+                                    // IF removeContact button has been clicked
                                     if (isset($_POST['removeContact'])) {
                                         $item = $_POST['item'];
                                         unset($contacts[$item]);
@@ -123,20 +131,28 @@ session_start();
                                         echo "<script type='text/javascript'>function toggleContact(){phpContact.classList.remove('hidden');btnContact.classList.add('active');btnBookings.classList.remove('active');btnGallery.classList.remove('active');}toggleContact();</script>";
                                         echo "<h4 class='text-left text-success'>Contact removed.</h4>";
                                     }
-                                    foreach($contacts as $item => $contact) {
+                                    // show contact elements
+                                    while ($contacts = $dbContacts->fetch()) {
+                                        $id = $contacts['id'];
+                                        $date = $contacts['date'];
+                                        $name = $contacts['name'];
+                                        $email = $contacts['email'];
+                                        $message = $contacts['message'];
                                         echo "<tr>";
-                                        foreach($contact as $key => $value) {
-                                            echo "<td>$value</td>";
-                                        }
-                                        echo "<td><form method='post' action='backoffice.php'><input type='hidden' name='item' value='$item'><button type='submit' name='removeContact' class='btn-danger'>x</button></form></td>";
+                                        echo "<td>$date</td>";
+                                        echo "<td>$name</td>";
+                                        echo "<td>$email</td>";
+                                        echo "<td>$message</td>";
+                                        echo "<td><form method='post' action='backoffice.php'><button type='submit' name='removeContact' value=$id class='btn-danger'>x</button></form></td>";
                                         echo "</tr>";
                                     }
+                                    $dbContacts->closeCursor(); // close database
                                     ?>
                                 </tbody>
                             </table>
                         </div>
                         <div class="col-12 table-responsive min-vh-100 hidden" id="phpBookings">
-                            <table class="table bg-white table-hover border border-dark">
+                            <table class="table bg-white table-hover border border-dark text-start">
                                 <thead>
                                     <tr>
                                     <th scope="col">Date</th>
@@ -166,7 +182,14 @@ session_start();
                                 </tr>
                                 <tbody>
                                     <?php
-                                    include "php/bookings.php";
+                                    // open database
+                                    try {
+                                        $db = new PDO('mysql:host=database;dbname=restaurant;charset=utf8', 'root', 'root');
+                                    } catch (Exception $e) {
+                                        die('Erreur : ' . $e->getMessage());
+                                    }
+                                    $dbBookings = $db->query('SELECT * FROM bookings');
+                                    // IF addBooking button has been clicked
                                     if (isset($_POST['addBooking'])) {
                                         $date = $_POST['date'];
                                         $restaurant = $_POST['restaurant'];
@@ -179,6 +202,7 @@ session_start();
                                         echo "<script type='text/javascript'>function toggleBookings(){phpContact.classList.add('hidden');phpBookings.classList.remove('hidden');btnContact.classList.remove('active');btnBookings.classList.add('active');btnGallery.classList.remove('active');}toggleBookings();</script>";
                                         echo "<h4 class='text-left text-success'>Booking added.</h4>";
                                     }
+                                    // IF removeBooking button has been clicked
                                     if (isset($_POST['removeBooking'])) {
                                         $item = $_POST['item'];
                                         unset($bookings[$item]);
@@ -187,20 +211,32 @@ session_start();
                                         echo "<script type='text/javascript'>function toggleBookings(){phpContact.classList.add('hidden');phpBookings.classList.remove('hidden');btnContact.classList.remove('active');btnBookings.classList.add('active');btnGallery.classList.remove('active');}toggleBookings();</script>";
                                         echo "<h4 class='text-left text-success'>Booking removed.</h4>";
                                     }
-                                    foreach($bookings as $item => $booking) {
+                                    // Show bookings elements
+                                    while ($bookings = $dbBookings->fetch()) {
+                                        $id = $bookings['id'];
+                                        $date = $bookings['date'];
+                                        $restaurant = $bookings['restaurant'];
+                                        $time = $bookings['time'];
+                                        $name = $bookings['name'];
+                                        $email = $bookings['email'];
+                                        $telephone = $bookings['telephone'];
                                         echo "<tr>";
-                                        foreach($booking as $key => $value) {
-                                            echo "<td>$value</td>";
-                                        }
-                                        echo "<td><form method='post' action='backoffice.php'><input type='hidden' name='item' value='$item'><button type='submit' name='removeBooking' class='btn-danger'>x</button></form></td>";
+                                        echo "<td>$date</td>";
+                                        echo "<td>$restaurant</td>";
+                                        echo "<td>$time</td>";
+                                        echo "<td>$name</td>";
+                                        echo "<td>$email</td>";
+                                        echo "<td>$telephone</td>";
+                                        echo "<td><form method='post' action='backoffice.php'><button type='submit' name='removeBooking' value=$id class='btn-danger'>x</button></form></td>";
                                         echo "</tr>";
                                     }
+                                    $dbBookings->closeCursor(); // close database
                                     ?>
                                 </tbody>
                             </table>
                         </div>
                         <div class="col-12 table-responsive min-vh-100 hidden" id="phpGallery">
-                            <table class="table bg-white table-hover border border-dark">
+                            <table class="table bg-white table-hover border border-dark text-start">
                                 <thead>
                                     <tr>
                                         <th scope="col">Date</th>
@@ -221,7 +257,13 @@ session_start();
                                 </tr>
                                 <tbody>
                                     <?php
-                                    include "php/gallery.php";
+                                    // open database
+                                    try {
+                                        $db = new PDO('mysql:host=database;dbname=restaurant;charset=utf8', 'root', 'root');
+                                    } catch (Exception $e) {
+                                        die('Erreur : ' . $e->getMessage());
+                                    }
+                                    $dbGallery = $db->query('SELECT * FROM gallery');
                                     // Upload file
                                     if(isset($_POST["addGallery"])) {
                                         $target_dir = "gallery/";
@@ -282,14 +324,22 @@ session_start();
                                         echo "<script type='text/javascript'>function toggleGallery(){phpContact.classList.add('hidden');phpGallery.classList.remove('hidden');btnContact.classList.remove('active');btnBookings.classList.remove('active');btnGallery.classList.add('active');}toggleGallery();</script>";
                                         echo "<h4 class='text-left text-success'>Image removed.</h4>";
                                     }
-                                    foreach($gallery as $item => $file) {
+                                    // show gallery elements
+                                    while ($gallery = $dbGallery->fetch()) {
+                                        $id = $gallery['id'];
+                                        $date = $gallery['date'];
+                                        $country = $gallery['country'];
+                                        $text = $gallery['text'];
+                                        $filename = $gallery['filename'];
                                         echo "<tr>";
-                                        foreach($file as $key => $value) {
-                                            echo "<td>$value</td>";
-                                        }
-                                        echo "<td><form method='post' action='backoffice.php'><input type='hidden' name='item' value='$item'><button type='submit' name='removeGallery' class='btn-danger'>x</button></form></td>";
+                                        echo "<td>$date</td>";
+                                        echo "<td>$country</td>";
+                                        echo "<td>$text</td>";
+                                        echo "<td>$filename</td>";
+                                        echo "<td><form method='post' action='backoffice.php'><button type='submit' name='removeContact' value=$id class='btn-danger'>x</button></form></td>";
                                         echo "</tr>";
                                     }
+                                    $dbGallery->closeCursor(); // close database
                                     ?>
                                 </tbody>
                             </table>
