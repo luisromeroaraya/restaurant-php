@@ -28,10 +28,10 @@
                     <div class="navbar-nav">
                         <a class="nav-item nav-link m-auto" href="index.html">Welcome</a>
                         <a class="nav-item nav-link m-auto" href="menu.html">Menu</a>
-                        <a class="nav-item nav-link m-auto active" aria-current="page" href="pictures.html">Pictures</a>
+                        <a class="nav-item nav-link m-auto active" aria-current="page" href="gallery.php">Gallery</a>
                         <a class="nav-item nav-link m-auto" href="restaurants.html">Restaurants</a>
-                        <a class="nav-item nav-link m-auto" href="contact.html">Contact</a>
-                        <a class="nav-item nav-link m-auto" href="backoffice.html">Backoffice</a>
+                        <a class="nav-item nav-link m-auto" href="contact.php">Contact</a>
+                        <a class="nav-item nav-link m-auto" href="backoffice.php">Backoffice</a>
                     </div>
                 </div>
             </nav>
@@ -104,54 +104,29 @@
             </section>
 
             <section class="container text-dark" id=middle>
-                <div class="row d-flex justify-content-center">
-                    <article class="col-12 col-md-10" id=pictures>
-                        <h2 class="text-center">Pictures</h2>
+                <div class="row d-flex justify-content-center mb-4">
+                    <article class="col-12 col-md-10 mb-4" id=pictures>
+                        <h2 class="text-center">Gallery</h2>
                         <div class="row row-cols-1 row-cols-md-3 g-4">
-                            <div class="col">
-                                <div class="card h-100">
-                                    <a href="images/gallery-empanada_frita_chile-lg.jpg"><img src="images/gallery-empanada_frita_chile-lg.jpg" class="card-img-top" alt="Empanada Frita Chile"></a>
-                                    <div class="card-body">
-                                        <h5 class="card-title">Chile</h5>
-                                        <p class="card-text">Empanada Frita</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="card h-100">
-                                    <a href="images/gallery-empanada_criolla_uruguay-lg.jpg"><img src="images/gallery-empanada_criolla_uruguay-lg.jpg" class="card-img-top" alt="Empanada Criolla Uruguay"></a>
-                                    <div class="card-body">
-                                        <h5 class="card-title">Uruguay</h5>
-                                        <p class="card-text">Empanada Criolla</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="card h-100">
-                                    <a href="images/gallery-empanada_frita_bolivia-lg.jpg"><img src="images/gallery-empanada_frita_bolivia-lg.jpg" class="card-img-top" alt="Empanada Frita Api Bolivia"></a>
-                                    <div class="card-body">
-                                        <h5 class="card-title">Bolivia</h5>
-                                        <p class="card-text">Empanada Frita y Api</p>
-                                    </div>
-                                </div>
-                            </div>
+                            <?php
+                                include "php/gallery.php";
+                                foreach($gallery as $image) {
+                                    $file = "gallery/".$image['file'];
+                                    $text = $image['text'];
+                                    $country = $image['country'];
+                                    echo"   <div class='col'>
+                                            <div class='card h-100'>
+                                            <a href=$file><img src=$file class='card-img-top' alt=$text></a>
+                                            <div class='card-body'>
+                                            <h5 class='card-title'>$country</h5>
+                                            <p class='card-text'>$text</p>
+                                            </div>
+                                            </div>
+                                            </div>
+                                        ";
+                                }
+                            ?>
                         </div>
-                        <nav aria-label="Pagination">
-                            <ul class="pagination justify-content-center">
-                                <li class="page-item">
-                                    <a class="page-link" href="pictures3.html">Previous</a>
-                                </li>
-                                <li class="page-item"><a class="page-link" href="pictures.html">1</a></li>
-                                <li class="page-item"><a class="page-link" href="pictures2.html">2</a></li>
-                                <li class="page-item"><a class="page-link" href="pictures3.html">3</a></li>
-                                <li class="page-item active" aria-current="page">
-                                    <span class="page-link">4</span>
-                                </li>
-                                <li class="page-item disabled">
-                                    <span class="page-link">Next</span>
-                                </li>
-                            </ul>
-                        </nav>
                     </article>
                 </div>
             </section>
