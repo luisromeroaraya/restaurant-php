@@ -107,7 +107,12 @@
                 <article class="row text-dark p-2 d-flex justify-content-around" id="reservation">
                     <h2 class="text-center">Reservation</h2>
                     <?php
-                        include "php/bookings.php";
+                        try {
+                            $db = new PDO('mysql:host=database;dbname=restaurant;charset=utf8', 'root', 'root'); // open database
+                        } catch (Exception $e) {
+                            die('Erreur : ' . $e->getMessage());
+                        }
+                        // IF addBooking button has been clicked
                         if (isset($_POST['addBooking'])) {
                             $date = $_POST['date'];
                             $restaurant = $_POST['restaurant'];
@@ -115,18 +120,18 @@
                             $name = $_POST['name'];
                             $email = $_POST['email'];
                             $telephone = $_POST['telephone'];
-                            $bookings[] = array("date" => $date, "restaurant"=> $restaurant, "time" => $time, "name" => $name, "email" => $email, "telephone" => $telephone);
-                            file_put_contents('php/bookings.php', "<?php\n\$bookings = ".var_export($bookings, true).";\n?>");
+                            $request = $db->prepare('INSERT INTO bookings(date, restaurant, time, name, email, telephone) VALUES(?, ?, ?, ?, ?, ?)'); //prepare element
+                            $request->execute(array($date, $restaurant, $time, $name, $email, $telephone)); // put new element in database
                             echo "<h3 class='text-center text-success'>Your table was booked succesfully! See you soon.</h3>";
                         }
-                        include "php/contact.php";
+                        // IF addContact button has been clicked
                         if (isset($_POST['addContact'])) {
                             $date = date("Y-m-d");
                             $name = $_POST['name'];
                             $email = $_POST['email'];
                             $message = $_POST['message'];
-                            $contacts[] = array("date" => $date, "name" => $name, "email" => $email, "message" => $message);
-                            file_put_contents('php/contact.php', "<?php\n\$contacts = ".var_export($contacts, true).";\n?>");
+                            $request = $db->prepare('INSERT INTO contact(date, name, email, message) VALUES(?, ?, ?, ?)'); //prepare element
+                            $request->execute(array($date, $name, $email, $message)); // put new element in database
                             echo "<h3 class='text-center text-success'>Message sent! Thank you for contacting us.</h3>";
                         }
                     ?>

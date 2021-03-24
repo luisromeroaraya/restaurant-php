@@ -104,34 +104,31 @@ session_start();
                                 </tr>
                                 <tbody>
                                     <?php
-                                    // open database
                                     try {
-                                        $db = new PDO('mysql:host=database;dbname=restaurant;charset=utf8', 'root', 'root');
+                                        $db = new PDO('mysql:host=database;dbname=restaurant;charset=utf8', 'root', 'root'); // open database
                                     } catch (Exception $e) {
                                         die('Erreur : ' . $e->getMessage());
                                     }
-                                    $dbContacts = $db->query('SELECT * FROM contact');
                                     // IF addContact button has been clicked
                                     if (isset($_POST['addContact'])) {
                                         $date = $_POST['date'];
                                         $name = $_POST['name'];
                                         $email = $_POST['email'];
                                         $message = $_POST['message'];
-                                        $contacts[] = array("date" => $date, "name" => $name, "email" => $email, "message" => $message);
-                                        file_put_contents('php/contact.php', "<?php\n\$contacts = ".var_export($contacts, true).";\n?>");
+                                        $request = $db->prepare('INSERT INTO contact(date, name, email, message) VALUES(?, ?, ?, ?)'); //prepare element
+                                        $request->execute(array($date, $name, $email, $message)); // put new element in database
                                         echo "<script type='text/javascript'>function toggleContact(){phpContact.classList.remove('hidden');btnContact.classList.add('active');btnBookings.classList.remove('active');btnGallery.classList.remove('active');}toggleContact();</script>";
                                         echo "<h4 class='text-left text-success'>Contact added.</h4>";
                                     }
                                     // IF removeContact button has been clicked
                                     if (isset($_POST['removeContact'])) {
-                                        $item = $_POST['item'];
-                                        unset($contacts[$item]);
-                                        $contacts = array_values($contacts);
-                                        file_put_contents('php/contact.php', "<?php\n\$contacts = ".var_export($contacts, true).";\n?>");
+                                        $id = $_POST['removeContact'];
+                                        $db->query("DELETE FROM contact WHERE id=$id"); //delete element
                                         echo "<script type='text/javascript'>function toggleContact(){phpContact.classList.remove('hidden');btnContact.classList.add('active');btnBookings.classList.remove('active');btnGallery.classList.remove('active');}toggleContact();</script>";
                                         echo "<h4 class='text-left text-success'>Contact removed.</h4>";
                                     }
-                                    // show contact elements
+                                    // create contact table
+                                    $dbContacts = $db->query('SELECT * FROM contact'); // get elements from database
                                     while ($contacts = $dbContacts->fetch()) {
                                         $id = $contacts['id'];
                                         $date = $contacts['date'];
@@ -182,13 +179,11 @@ session_start();
                                 </tr>
                                 <tbody>
                                     <?php
-                                    // open database
                                     try {
-                                        $db = new PDO('mysql:host=database;dbname=restaurant;charset=utf8', 'root', 'root');
+                                        $db = new PDO('mysql:host=database;dbname=restaurant;charset=utf8', 'root', 'root'); // open database
                                     } catch (Exception $e) {
                                         die('Erreur : ' . $e->getMessage());
                                     }
-                                    $dbBookings = $db->query('SELECT * FROM bookings');
                                     // IF addBooking button has been clicked
                                     if (isset($_POST['addBooking'])) {
                                         $date = $_POST['date'];
@@ -197,22 +192,21 @@ session_start();
                                         $name = $_POST['name'];
                                         $email = $_POST['email'];
                                         $telephone = $_POST['telephone'];
-                                        $bookings[] = array("date" => $date, "restaurant"=> $restaurant, "time" => $time, "name" => $name, "email" => $email, "telephone" => $telephone);
-                                        file_put_contents('php/bookings.php', "<?php\n\$bookings = ".var_export($bookings, true).";\n?>");
+                                        $request = $db->prepare('INSERT INTO bookings(date, restaurant, time, name, email, telephone) VALUES(?, ?, ?, ?, ?, ?)'); //prepare element
+                                        $request->execute(array($date, $restaurant, $time, $name, $email, $telephone)); // put new element in database
                                         echo "<script type='text/javascript'>function toggleBookings(){phpContact.classList.add('hidden');phpBookings.classList.remove('hidden');btnContact.classList.remove('active');btnBookings.classList.add('active');btnGallery.classList.remove('active');}toggleBookings();</script>";
                                         echo "<h4 class='text-left text-success'>Booking added.</h4>";
                                     }
                                     // IF removeBooking button has been clicked
                                     if (isset($_POST['removeBooking'])) {
-                                        $item = $_POST['item'];
-                                        unset($bookings[$item]);
-                                        $bookings = array_values($bookings);
-                                        file_put_contents('php/bookings.php', "<?php\n\$bookings = ".var_export($bookings, true).";\n?>");
+                                        $id = $_POST['removeBooking'];
+                                        $db->query("DELETE FROM bookings WHERE id=$id"); //delete element
                                         echo "<script type='text/javascript'>function toggleBookings(){phpContact.classList.add('hidden');phpBookings.classList.remove('hidden');btnContact.classList.remove('active');btnBookings.classList.add('active');btnGallery.classList.remove('active');}toggleBookings();</script>";
                                         echo "<h4 class='text-left text-success'>Booking removed.</h4>";
                                     }
-                                    // Show bookings elements
-                                    while ($bookings = $dbBookings->fetch()) {
+                                    // create booking table
+                                    $dbBookings = $db->query('SELECT * FROM bookings'); // get elements from database
+                                    while ($bookings = $dbBookings->fetch()) { 
                                         $id = $bookings['id'];
                                         $date = $bookings['date'];
                                         $restaurant = $bookings['restaurant'];
