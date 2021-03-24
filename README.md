@@ -10,7 +10,7 @@
 At the end of this challenge, depending on what you completed, you should be able to:
 
 * Make a Form and manage messages via an interface
-* View and manage a guestbook
+* View and manage a guestbook (I will use a Bookings registry instead)
 * Display an image gallery dynamically
 * Use an API
 * Deploy a project in php
