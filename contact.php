@@ -117,7 +117,7 @@
                             $date = $_POST['date'];
                             $restaurant = $_POST['restaurant'];
                             $time = $_POST['time'];
-                            $name = $_POST['name'];
+                            $name = htmlspecialchars($_POST['name']);
                             $email = $_POST['email'];
                             $telephone = $_POST['telephone'];
                             $request = $db->prepare('INSERT INTO bookings(date, restaurant, time, name, email, telephone) VALUES(?, ?, ?, ?, ?, ?)'); //prepare element
@@ -127,9 +127,9 @@
                         // IF addContact button has been clicked
                         if (isset($_POST['addContact'])) {
                             $date = date("Y-m-d");
-                            $name = $_POST['name'];
+                            $name = htmlspecialchars($_POST['name']);
                             $email = $_POST['email'];
-                            $message = $_POST['message'];
+                            $message = htmlspecialchars($_POST['message']);
                             $request = $db->prepare('INSERT INTO contact(date, name, email, message) VALUES(?, ?, ?, ?)'); //prepare element
                             $request->execute(array($date, $name, $email, $message)); // put new element in database
                             echo "<h3 class='text-center text-success'>Message sent! Thank you for contacting us.</h3>";

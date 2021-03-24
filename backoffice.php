@@ -47,6 +47,18 @@ session_start();
                     <div class="row p-2 d-flex justify-content-center text-center mx-auto">
                         <h2>Backoffice</h2>
                         <?php
+                            // try {
+                            //     $db = new PDO('mysql:host=database;dbname=restaurant;charset=utf8', 'root', 'root'); // open database
+                            // } catch (Exception $e) {
+                            //     die('Erreur : ' . $e->getMessage());
+                            // }
+                            // $request = $db->query('SELECT * FROM users'); // get elements from database
+                            // while ($users = $request->fetch()) {
+                            //     $id = $users['id'];
+                            //     $date = $users['username'];
+                            //     $name = $users['password'];
+                            // }
+                            // $request->closeCursor(); // close database
                             include "php/password.php";
                             // IF username/password doesn't exist or are wrong we show login form
                             if ((!isset($_SESSION['username']) OR !isset($_SESSION['password'])) AND ($_POST['username'] != $username OR $_POST['password'] != $password)) {
@@ -112,9 +124,9 @@ session_start();
                                         // IF addContact button has been clicked
                                         if (isset($_POST['addContact'])) {
                                             $date = $_POST['date'];
-                                            $name = $_POST['name'];
+                                            $name = htmlspecialchars($_POST['name']);
                                             $email = $_POST['email'];
-                                            $message = $_POST['message'];
+                                            $message = htmlspecialchars($_POST['message']);
                                             $request = $db->prepare('INSERT INTO contact(date, name, email, message) VALUES(?, ?, ?, ?)'); //prepare element
                                             $request->execute(array($date, $name, $email, $message)); // put new element in database
                                             echo "<script type='text/javascript'>function toggleContact(){phpContact.classList.remove('hidden');btnContact.classList.add('active');btnBookings.classList.remove('active');btnGallery.classList.remove('active');}toggleContact();</script>";
@@ -189,7 +201,7 @@ session_start();
                                             $date = $_POST['date'];
                                             $restaurant = $_POST['restaurant'];
                                             $time = $_POST['time'];
-                                            $name = $_POST['name'];
+                                            $name = htmlspecialchars($_POST['name']);
                                             $email = $_POST['email'];
                                             $telephone = $_POST['telephone'];
                                             $request = $db->prepare('INSERT INTO bookings(date, restaurant, time, name, email, telephone) VALUES(?, ?, ?, ?, ?, ?)'); //prepare element
@@ -300,8 +312,8 @@ session_start();
                                                 }
                                             }
                                             $date = date("Y-m-d");
-                                            $country = $_POST['country'];
-                                            $text = $_POST['text'];
+                                            $country = htmlspecialchars($_POST['country']);
+                                            $text = htmlspecialchars($_POST['text']);
                                             $file = $_FILES['file']['name'];
                                             $gallery[] = array("date" => $date, "country" => $country, "text" => $text, "file" => $file);
                                             file_put_contents('php/gallery.php', "<?php\n\$gallery = ".var_export($gallery, true).";\n?>");
