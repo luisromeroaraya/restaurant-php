@@ -47,14 +47,14 @@ session_start();
                     <div class="row p-2 d-flex justify-content-center text-center mx-auto">
                         <h2>Backoffice</h2>
                         <?php
-                        include "php/password.php";
-                        // IF username/password doesn't exist or are wrong we show login form
-                        if ((!isset($_SESSION['username']) OR !isset($_SESSION['password'])) AND ($_POST['username'] != $username OR $_POST['password'] != $password)) {
-                        
-                            // IF username/password are wrong we show ERROR
-                            if (isset($_POST['username']) OR isset($_POST['password'])) {
-                                echo "<strong>Wrong username/password</strong>";
-                            }
+                            include "php/password.php";
+                            // IF username/password doesn't exist or are wrong we show login form
+                            if ((!isset($_SESSION['username']) OR !isset($_SESSION['password'])) AND ($_POST['username'] != $username OR $_POST['password'] != $password)) {
+                            
+                                // IF username/password are wrong we show ERROR
+                                if (isset($_POST['username']) OR isset($_POST['password'])) {
+                                    echo "<strong>Wrong username/password</strong>";
+                                }
                         ?>
                         <form method="post" action="backoffice.php">
                             <label for="username">Username:</label>
@@ -104,46 +104,46 @@ session_start();
                                 </tr>
                                 <tbody>
                                     <?php
-                                    try {
-                                        $db = new PDO('mysql:host=database;dbname=restaurant;charset=utf8', 'root', 'root'); // open database
-                                    } catch (Exception $e) {
-                                        die('Erreur : ' . $e->getMessage());
-                                    }
-                                    // IF addContact button has been clicked
-                                    if (isset($_POST['addContact'])) {
-                                        $date = $_POST['date'];
-                                        $name = $_POST['name'];
-                                        $email = $_POST['email'];
-                                        $message = $_POST['message'];
-                                        $request = $db->prepare('INSERT INTO contact(date, name, email, message) VALUES(?, ?, ?, ?)'); //prepare element
-                                        $request->execute(array($date, $name, $email, $message)); // put new element in database
-                                        echo "<script type='text/javascript'>function toggleContact(){phpContact.classList.remove('hidden');btnContact.classList.add('active');btnBookings.classList.remove('active');btnGallery.classList.remove('active');}toggleContact();</script>";
-                                        echo "<h4 class='text-left text-success'>Contact added.</h4>";
-                                    }
-                                    // IF removeContact button has been clicked
-                                    if (isset($_POST['removeContact'])) {
-                                        $id = $_POST['removeContact'];
-                                        $db->query("DELETE FROM contact WHERE id=$id"); //delete element
-                                        echo "<script type='text/javascript'>function toggleContact(){phpContact.classList.remove('hidden');btnContact.classList.add('active');btnBookings.classList.remove('active');btnGallery.classList.remove('active');}toggleContact();</script>";
-                                        echo "<h4 class='text-left text-success'>Contact removed.</h4>";
-                                    }
-                                    // create contact table
-                                    $dbContacts = $db->query('SELECT * FROM contact'); // get elements from database
-                                    while ($contacts = $dbContacts->fetch()) {
-                                        $id = $contacts['id'];
-                                        $date = $contacts['date'];
-                                        $name = $contacts['name'];
-                                        $email = $contacts['email'];
-                                        $message = $contacts['message'];
-                                        echo "<tr>";
-                                        echo "<td>$date</td>";
-                                        echo "<td>$name</td>";
-                                        echo "<td>$email</td>";
-                                        echo "<td>$message</td>";
-                                        echo "<td><form method='post' action='backoffice.php'><button type='submit' name='removeContact' value=$id class='btn-danger'>x</button></form></td>";
-                                        echo "</tr>";
-                                    }
-                                    $dbContacts->closeCursor(); // close database
+                                        try {
+                                            $db = new PDO('mysql:host=database;dbname=restaurant;charset=utf8', 'root', 'root'); // open database
+                                        } catch (Exception $e) {
+                                            die('Erreur : ' . $e->getMessage());
+                                        }
+                                        // IF addContact button has been clicked
+                                        if (isset($_POST['addContact'])) {
+                                            $date = $_POST['date'];
+                                            $name = $_POST['name'];
+                                            $email = $_POST['email'];
+                                            $message = $_POST['message'];
+                                            $request = $db->prepare('INSERT INTO contact(date, name, email, message) VALUES(?, ?, ?, ?)'); //prepare element
+                                            $request->execute(array($date, $name, $email, $message)); // put new element in database
+                                            echo "<script type='text/javascript'>function toggleContact(){phpContact.classList.remove('hidden');btnContact.classList.add('active');btnBookings.classList.remove('active');btnGallery.classList.remove('active');}toggleContact();</script>";
+                                            echo "<h4 class='text-left text-success'>Contact added.</h4>";
+                                        }
+                                        // IF removeContact button has been clicked
+                                        if (isset($_POST['removeContact'])) {
+                                            $id = $_POST['removeContact'];
+                                            $db->query("DELETE FROM contact WHERE id=$id"); //delete element
+                                            echo "<script type='text/javascript'>function toggleContact(){phpContact.classList.remove('hidden');btnContact.classList.add('active');btnBookings.classList.remove('active');btnGallery.classList.remove('active');}toggleContact();</script>";
+                                            echo "<h4 class='text-left text-success'>Contact removed.</h4>";
+                                        }
+                                        // create contact table
+                                        $request = $db->query('SELECT * FROM contact'); // get elements from database
+                                        while ($contacts = $request->fetch()) {
+                                            $id = $contacts['id'];
+                                            $date = $contacts['date'];
+                                            $name = $contacts['name'];
+                                            $email = $contacts['email'];
+                                            $message = $contacts['message'];
+                                            echo "<tr>";
+                                            echo "<td>$date</td>";
+                                            echo "<td>$name</td>";
+                                            echo "<td>$email</td>";
+                                            echo "<td>$message</td>";
+                                            echo "<td><form method='post' action='backoffice.php'><button type='submit' name='removeContact' value=$id class='btn-danger'>x</button></form></td>";
+                                            echo "</tr>";
+                                        }
+                                        $request->closeCursor(); // close database
                                     ?>
                                 </tbody>
                             </table>
@@ -179,52 +179,52 @@ session_start();
                                 </tr>
                                 <tbody>
                                     <?php
-                                    try {
-                                        $db = new PDO('mysql:host=database;dbname=restaurant;charset=utf8', 'root', 'root'); // open database
-                                    } catch (Exception $e) {
-                                        die('Erreur : ' . $e->getMessage());
-                                    }
-                                    // IF addBooking button has been clicked
-                                    if (isset($_POST['addBooking'])) {
-                                        $date = $_POST['date'];
-                                        $restaurant = $_POST['restaurant'];
-                                        $time = $_POST['time'];
-                                        $name = $_POST['name'];
-                                        $email = $_POST['email'];
-                                        $telephone = $_POST['telephone'];
-                                        $request = $db->prepare('INSERT INTO bookings(date, restaurant, time, name, email, telephone) VALUES(?, ?, ?, ?, ?, ?)'); //prepare element
-                                        $request->execute(array($date, $restaurant, $time, $name, $email, $telephone)); // put new element in database
-                                        echo "<script type='text/javascript'>function toggleBookings(){phpContact.classList.add('hidden');phpBookings.classList.remove('hidden');btnContact.classList.remove('active');btnBookings.classList.add('active');btnGallery.classList.remove('active');}toggleBookings();</script>";
-                                        echo "<h4 class='text-left text-success'>Booking added.</h4>";
-                                    }
-                                    // IF removeBooking button has been clicked
-                                    if (isset($_POST['removeBooking'])) {
-                                        $id = $_POST['removeBooking'];
-                                        $db->query("DELETE FROM bookings WHERE id=$id"); //delete element
-                                        echo "<script type='text/javascript'>function toggleBookings(){phpContact.classList.add('hidden');phpBookings.classList.remove('hidden');btnContact.classList.remove('active');btnBookings.classList.add('active');btnGallery.classList.remove('active');}toggleBookings();</script>";
-                                        echo "<h4 class='text-left text-success'>Booking removed.</h4>";
-                                    }
-                                    // create booking table
-                                    $dbBookings = $db->query('SELECT * FROM bookings'); // get elements from database
-                                    while ($bookings = $dbBookings->fetch()) { 
-                                        $id = $bookings['id'];
-                                        $date = $bookings['date'];
-                                        $restaurant = $bookings['restaurant'];
-                                        $time = $bookings['time'];
-                                        $name = $bookings['name'];
-                                        $email = $bookings['email'];
-                                        $telephone = $bookings['telephone'];
-                                        echo "<tr>";
-                                        echo "<td>$date</td>";
-                                        echo "<td>$restaurant</td>";
-                                        echo "<td>$time</td>";
-                                        echo "<td>$name</td>";
-                                        echo "<td>$email</td>";
-                                        echo "<td>$telephone</td>";
-                                        echo "<td><form method='post' action='backoffice.php'><button type='submit' name='removeBooking' value=$id class='btn-danger'>x</button></form></td>";
-                                        echo "</tr>";
-                                    }
-                                    $dbBookings->closeCursor(); // close database
+                                        try {
+                                            $db = new PDO('mysql:host=database;dbname=restaurant;charset=utf8', 'root', 'root'); // open database
+                                        } catch (Exception $e) {
+                                            die('Erreur : ' . $e->getMessage());
+                                        }
+                                        // IF addBooking button has been clicked
+                                        if (isset($_POST['addBooking'])) {
+                                            $date = $_POST['date'];
+                                            $restaurant = $_POST['restaurant'];
+                                            $time = $_POST['time'];
+                                            $name = $_POST['name'];
+                                            $email = $_POST['email'];
+                                            $telephone = $_POST['telephone'];
+                                            $request = $db->prepare('INSERT INTO bookings(date, restaurant, time, name, email, telephone) VALUES(?, ?, ?, ?, ?, ?)'); //prepare element
+                                            $request->execute(array($date, $restaurant, $time, $name, $email, $telephone)); // put new element in database
+                                            echo "<script type='text/javascript'>function toggleBookings(){phpContact.classList.add('hidden');phpBookings.classList.remove('hidden');btnContact.classList.remove('active');btnBookings.classList.add('active');btnGallery.classList.remove('active');}toggleBookings();</script>";
+                                            echo "<h4 class='text-left text-success'>Booking added.</h4>";
+                                        }
+                                        // IF removeBooking button has been clicked
+                                        if (isset($_POST['removeBooking'])) {
+                                            $id = $_POST['removeBooking'];
+                                            $db->query("DELETE FROM bookings WHERE id=$id"); //delete element
+                                            echo "<script type='text/javascript'>function toggleBookings(){phpContact.classList.add('hidden');phpBookings.classList.remove('hidden');btnContact.classList.remove('active');btnBookings.classList.add('active');btnGallery.classList.remove('active');}toggleBookings();</script>";
+                                            echo "<h4 class='text-left text-success'>Booking removed.</h4>";
+                                        }
+                                        // create booking table
+                                        $request = $db->query('SELECT * FROM bookings'); // get elements from database
+                                        while ($bookings = $request->fetch()) { 
+                                            $id = $bookings['id'];
+                                            $date = $bookings['date'];
+                                            $restaurant = $bookings['restaurant'];
+                                            $time = $bookings['time'];
+                                            $name = $bookings['name'];
+                                            $email = $bookings['email'];
+                                            $telephone = $bookings['telephone'];
+                                            echo "<tr>";
+                                            echo "<td>$date</td>";
+                                            echo "<td>$restaurant</td>";
+                                            echo "<td>$time</td>";
+                                            echo "<td>$name</td>";
+                                            echo "<td>$email</td>";
+                                            echo "<td>$telephone</td>";
+                                            echo "<td><form method='post' action='backoffice.php'><button type='submit' name='removeBooking' value=$id class='btn-danger'>x</button></form></td>";
+                                            echo "</tr>";
+                                        }
+                                        $request->closeCursor(); // close database
                                     ?>
                                 </tbody>
                             </table>
@@ -251,95 +251,95 @@ session_start();
                                 </tr>
                                 <tbody>
                                     <?php
-                                    // open database
-                                    try {
-                                        $db = new PDO('mysql:host=database;dbname=restaurant;charset=utf8', 'root', 'root');
-                                    } catch (Exception $e) {
-                                        die('Erreur : ' . $e->getMessage());
-                                    }
-                                    $dbGallery = $db->query('SELECT * FROM gallery');
-                                    // Upload file
-                                    if(isset($_POST["addGallery"])) {
-                                        $target_dir = "gallery/";
-                                        $target_file = $target_dir . basename($_FILES["file"]["name"]);
-                                        $uploadOk = 1;
-                                        $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
-                                        // Check if image file is a actual image or fake image
-                                        $check = getimagesize($_FILES["file"]["tmp_name"]);
-                                        if($check !== false) {
-                                            //echo "File is an image - " . $check["mime"] . ".";
+                                        // open database
+                                        try {
+                                            $db = new PDO('mysql:host=database;dbname=restaurant;charset=utf8', 'root', 'root');
+                                        } catch (Exception $e) {
+                                            die('Erreur : ' . $e->getMessage());
+                                        }
+                                        // Upload file
+                                        if(isset($_POST["addGallery"])) {
+                                            $target_dir = "gallery/";
+                                            $target_file = $target_dir . basename($_FILES["file"]["name"]);
                                             $uploadOk = 1;
-                                        } else {
-                                            echo "<h4 class='text-left text-danger'>File is not an image.</h4>";
-                                            $uploadOk = 0;
-                                        }
-                                        // Check if file already exists
-                                        if (file_exists($target_file)) {
-                                            echo "<h4 class='text-left text-danger'>Sorry, file already exists.</h4>";
-                                            $uploadOk = 0;
-                                        }
-                                        // Check file size
-                                        if ($_FILES["file"]["size"] > 500000) {
-                                            echo "<h4 class='text-left text-danger'>Sorry, your file is too large.</h4>";
-                                            $uploadOk = 0;
-                                        }
-                                        // Allow certain file formats
-                                        if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-                                        && $imageFileType != "gif" ) {
-                                            echo "<h4 class='text-left text-danger'>Sorry, only JPG, JPEG, PNG & GIF files are allowed.</h4>";
-                                            $uploadOk = 0;
-                                        }
-                                        // Check if $uploadOk is set to 0 by an error
-                                        if ($uploadOk == 0) {
-                                            echo "<h4 class='text-left text-danger'>Sorry, your file was not uploaded.</h4>";
-                                        // if everything is ok, try to upload file
-                                        } else {
-                                            if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
-                                                echo "<h4 class='text-left text-success'>Your file has been uploaded.</h4>";
+                                            $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+                                            // Check if image file is a actual image or fake image
+                                            $check = getimagesize($_FILES["file"]["tmp_name"]);
+                                            if($check !== false) {
+                                                //echo "File is an image - " . $check["mime"] . ".";
+                                                $uploadOk = 1;
                                             } else {
-                                                echo "<h4 class='text-left text-danger'>Sorry, there was an error uploading your file.</h4>";
+                                                echo "<h4 class='text-left text-danger'>File is not an image.</h4>";
+                                                $uploadOk = 0;
                                             }
+                                            // Check if file already exists
+                                            if (file_exists($target_file)) {
+                                                echo "<h4 class='text-left text-danger'>Sorry, file already exists.</h4>";
+                                                $uploadOk = 0;
+                                            }
+                                            // Check file size
+                                            if ($_FILES["file"]["size"] > 500000) {
+                                                echo "<h4 class='text-left text-danger'>Sorry, your file is too large.</h4>";
+                                                $uploadOk = 0;
+                                            }
+                                            // Allow certain file formats
+                                            if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+                                            && $imageFileType != "gif" ) {
+                                                echo "<h4 class='text-left text-danger'>Sorry, only JPG, JPEG, PNG & GIF files are allowed.</h4>";
+                                                $uploadOk = 0;
+                                            }
+                                            // Check if $uploadOk is set to 0 by an error
+                                            if ($uploadOk == 0) {
+                                                echo "<h4 class='text-left text-danger'>Sorry, your file was not uploaded.</h4>";
+                                            // if everything is ok, try to upload file
+                                            } else {
+                                                if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
+                                                    echo "<h4 class='text-left text-success'>Your file has been uploaded.</h4>";
+                                                } else {
+                                                    echo "<h4 class='text-left text-danger'>Sorry, there was an error uploading your file.</h4>";
+                                                }
+                                            }
+                                            $date = date("Y-m-d");
+                                            $country = $_POST['country'];
+                                            $text = $_POST['text'];
+                                            $file = $_FILES['file']['name'];
+                                            $gallery[] = array("date" => $date, "country" => $country, "text" => $text, "file" => $file);
+                                            file_put_contents('php/gallery.php', "<?php\n\$gallery = ".var_export($gallery, true).";\n?>");
+                                            echo "<script type='text/javascript'>function toggleGallery(){phpContact.classList.add('hidden');phpGallery.classList.remove('hidden');btnContact.classList.remove('active');btnBookings.classList.remove('active');btnGallery.classList.add('active');}toggleGallery();</script>";
                                         }
-                                        $date = date("Y-m-d");
-                                        $country = $_POST['country'];
-                                        $text = $_POST['text'];
-                                        $file = $_FILES['file']['name'];
-                                        $gallery[] = array("date" => $date, "country" => $country, "text" => $text, "file" => $file);
-                                        file_put_contents('php/gallery.php', "<?php\n\$gallery = ".var_export($gallery, true).";\n?>");
-                                        echo "<script type='text/javascript'>function toggleGallery(){phpContact.classList.add('hidden');phpGallery.classList.remove('hidden');btnContact.classList.remove('active');btnBookings.classList.remove('active');btnGallery.classList.add('active');}toggleGallery();</script>";
-                                    }
-                                    if (isset($_POST['removeGallery'])) {
-                                        $item = $_POST['item'];
-                                        $file = $gallery[$item]['file'];
-                                        unlink("gallery/".$file);
-                                        unset($gallery[$item]);
-                                        $gallery = array_values($gallery);
-                                        file_put_contents('php/gallery.php', "<?php\n\$gallery = ".var_export($gallery, true).";\n?>");
-                                        echo "<script type='text/javascript'>function toggleGallery(){phpContact.classList.add('hidden');phpGallery.classList.remove('hidden');btnContact.classList.remove('active');btnBookings.classList.remove('active');btnGallery.classList.add('active');}toggleGallery();</script>";
-                                        echo "<h4 class='text-left text-success'>Image removed.</h4>";
-                                    }
-                                    // show gallery elements
-                                    while ($gallery = $dbGallery->fetch()) {
-                                        $id = $gallery['id'];
-                                        $date = $gallery['date'];
-                                        $country = $gallery['country'];
-                                        $text = $gallery['text'];
-                                        $filename = $gallery['filename'];
-                                        echo "<tr>";
-                                        echo "<td>$date</td>";
-                                        echo "<td>$country</td>";
-                                        echo "<td>$text</td>";
-                                        echo "<td>$filename</td>";
-                                        echo "<td><form method='post' action='backoffice.php'><button type='submit' name='removeContact' value=$id class='btn-danger'>x</button></form></td>";
-                                        echo "</tr>";
-                                    }
-                                    $dbGallery->closeCursor(); // close database
+                                        if (isset($_POST['removeGallery'])) {
+                                            $item = $_POST['item'];
+                                            $file = $gallery[$item]['file'];
+                                            unlink("gallery/".$file);
+                                            unset($gallery[$item]);
+                                            $gallery = array_values($gallery);
+                                            file_put_contents('php/gallery.php', "<?php\n\$gallery = ".var_export($gallery, true).";\n?>");
+                                            echo "<script type='text/javascript'>function toggleGallery(){phpContact.classList.add('hidden');phpGallery.classList.remove('hidden');btnContact.classList.remove('active');btnBookings.classList.remove('active');btnGallery.classList.add('active');}toggleGallery();</script>";
+                                            echo "<h4 class='text-left text-success'>Image removed.</h4>";
+                                        }
+                                        // show gallery elements
+                                        $request = $db->query('SELECT * FROM gallery');
+                                        while ($gallery = $request->fetch()) {
+                                            $id = $gallery['id'];
+                                            $date = $gallery['date'];
+                                            $country = $gallery['country'];
+                                            $text = $gallery['text'];
+                                            $filename = $gallery['filename'];
+                                            echo "<tr>";
+                                            echo "<td>$date</td>";
+                                            echo "<td>$country</td>";
+                                            echo "<td>$text</td>";
+                                            echo "<td>$filename</td>";
+                                            echo "<td><form method='post' action='backoffice.php'><button type='submit' name='removeContact' value=$id class='btn-danger'>x</button></form></td>";
+                                            echo "</tr>";
+                                        }
+                                        $request->closeCursor(); // close database
                                     ?>
                                 </tbody>
                             </table>
                         </div>
                         <?php
-                        }
+                            }
                         ?>
                     </div>
                 </article>
