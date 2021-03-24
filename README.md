@@ -36,7 +36,7 @@ One of the idea the owner had was to implement a "Back office" to the website. T
 Something like that:
 ![Backoffice](https://github.com/becodeorg/BXL-Swartz-4-27/raw/master/2.The-Hill/2.PHP/deletemessage.png)
 
-### Guest book
+### Guestbook (Bookings)
 The owner would like to have a new [guest book](https://en.wikipedia.org/wiki/Guestbook) page to receive comments, kind words or advice from the customers. However, it ideally need to be made with the google sheet API to allow the owner to check everything directly from his google account.
 
 If you find that it is too early to take an interest in API's you can proceed as for the previous form and use your database.
@@ -47,8 +47,16 @@ The form should at least contain:
 * visit date
 * comment (optional input)
 
+In my case my Bookings form will have:
+- [x] date
+- [x] restaurant
+- [x] time
+- [x] name
+- [x] email
+- [x] telephone
+
 **Bonus**
-* Use only one page to manage messages and the guestbook
+- [x] Use only one page to manage messages and the guestbook
 
 ![Guestbook](https://github.com/becodeorg/BXL-Swartz-4-27/raw/master/2.The-Hill/2.PHP/backofficeX2.png)
 
@@ -58,7 +66,7 @@ For the moment the images in your gallery are not dynamic. To add a photo you mu
 The objective is twofold. First create a page to upload images. Secondly create a php script that allows you to display the images (Normally the front of your gallery does not change).
 
 **Bonus**
-* Use only one page to manage messages, guestbook and gallery
+- [x] Use only one page to manage messages, guestbook and gallery
 
 ![Gallery](https://github.com/becodeorg/BXL-Swartz-4-27/raw/master/2.The-Hill/2.PHP/backofficeIMG.png)
 
