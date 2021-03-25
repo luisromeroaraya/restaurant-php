@@ -110,7 +110,25 @@
                         <div class="row row-cols-1 row-cols-md-3 g-4">
                             <?php
                                 include "../db.php"; // open database
-                                include "php/showGallery.php"; // generate gallery
+                                $request = $db->query('SELECT * FROM gallery'); // get elements from database
+                                // show elements from database
+                                while ($gallery = $request->fetch()) {
+                                    $country = $gallery['country'];
+                                    $text = $gallery['text'];
+                                    $filename = "gallery/".$gallery['filename'];
+                                    echo"   <div class='col'>
+                                            <div class='card h-100'>
+                                            <a href=$filename><img src=$filename class='card-img-top' alt=$text></a>
+                                            <div class='card-body'>
+                                            <h5 class='card-title'>$country</h5>
+                                            <p class='card-text'>$text</p>
+                                            </div>
+                                            </div>
+                                            </div>
+                                        ";
+                                }
+                                $request->closeCursor(); // close database
+                                
                             ?>
                         </div>
                     </article>

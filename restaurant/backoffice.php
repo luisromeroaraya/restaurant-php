@@ -117,9 +117,42 @@ session_start();
                                 <tbody>
                                     <?php
                                         include "../db.php"; // open database
-                                        include "php/addElement.php"; // IF add contact
-                                        include "php/deleteElement.php"; // IF delete contact
-                                        include "php/generateContact.php"; // generate contact table
+                                        // IF addContact button has been clicked
+                                        if (isset($_POST['addContact'])) {
+                                            $date = $_POST['date'];
+                                            $name = htmlspecialchars($_POST['name']);
+                                            $email = $_POST['email'];
+                                            $message = htmlspecialchars($_POST['message']);
+                                            $request = $db->prepare('INSERT INTO contact(date, name, email, message) VALUES(?, ?, ?, ?)'); //prepare add command
+                                            $request->execute(array($date, $name, $email, $message)); // add new element to database
+                                            echo "<script type='text/javascript'>function toggleContact(){phpContact.classList.remove('hidden');btnContact.classList.add('active');btnBookings.classList.remove('active');btnGallery.classList.remove('active');}toggleContact();</script>";
+                                            echo "<h4 class='text-left text-success'>Contact added.</h4>";
+                                        }
+                                        // IF removeContact button has been clicked
+                                        if (isset($_POST['removeContact'])) {
+                                            $id = $_POST['removeContact'];
+                                            $request = $db->prepare('DELETE FROM contact WHERE id = ?'); //prepare delete command
+                                            $request->execute(array($id)); // delete element from database
+                                            echo "<script type='text/javascript'>function toggleContact(){phpContact.classList.remove('hidden');btnContact.classList.add('active');btnBookings.classList.remove('active');btnGallery.classList.remove('active');}toggleContact();</script>";
+                                            echo "<h4 class='text-left text-success'>Contact removed.</h4>";
+                                        }
+                                        // generate contact table
+                                        $request = $db->query('SELECT * FROM contact'); // get elements from database
+                                        while ($contacts = $request->fetch()) {
+                                            $id = $contacts['id'];
+                                            $date = $contacts['date'];
+                                            $name = $contacts['name'];
+                                            $email = $contacts['email'];
+                                            $message = $contacts['message'];
+                                            echo "<tr>";
+                                            echo "<td>$date</td>";
+                                            echo "<td>$name</td>";
+                                            echo "<td>$email</td>";
+                                            echo "<td>$message</td>";
+                                            echo "<td><form method='post' action='backoffice.php'><button type='submit' name='removeContact' value=$id class='btn-danger'>x</button></form></td>";
+                                            echo "</tr>";
+                                        }
+                                        $request->closeCursor(); // close database
                                     ?>
                                 </tbody>
                             </table>
@@ -156,9 +189,48 @@ session_start();
                                 <tbody>
                                     <?php
                                         include "../db.php"; // open database
-                                        include "php/addElement.php"; // IF add contact
-                                        include "php/deleteElement.php"; // IF delete contact
-                                        include "php/generateBooking.php"; // generate bookings table
+                                        // IF addBooking button has been clicked
+                                        if (isset($_POST['addBooking'])) {
+                                            $date = $_POST['date'];
+                                            $restaurant = $_POST['restaurant'];
+                                            $time = $_POST['time'];
+                                            $name = htmlspecialchars($_POST['name']);
+                                            $email = $_POST['email'];
+                                            $telephone = $_POST['telephone'];
+                                            $request = $db->prepare('INSERT INTO bookings(date, restaurant, time, name, email, telephone) VALUES(?, ?, ?, ?, ?, ?)'); //prepare add command
+                                            $request->execute(array($date, $restaurant, $time, $name, $email, $telephone)); // add new element in database
+                                            echo "<script type='text/javascript'>function toggleBookings(){phpContact.classList.add('hidden');phpBookings.classList.remove('hidden');btnContact.classList.remove('active');btnBookings.classList.add('active');btnGallery.classList.remove('active');}toggleBookings();</script>";
+                                            echo "<h4 class='text-left text-success'>Booking added.</h4>";
+                                        }
+                                        // IF removeBooking button has been clicked
+                                        if (isset($_POST['removeBooking'])) {
+                                            $id = $_POST['removeBooking'];
+                                            $request = $db->prepare('DELETE FROM bookings WHERE id = ?'); //prepare delete command
+                                            $request->execute(array($id)); // delete element from database
+                                            echo "<script type='text/javascript'>function toggleBookings(){phpContact.classList.add('hidden');phpBookings.classList.remove('hidden');btnContact.classList.remove('active');btnBookings.classList.add('active');btnGallery.classList.remove('active');}toggleBookings();</script>";
+                                            echo "<h4 class='text-left text-success'>Booking removed.</h4>";
+                                        }
+                                        // generate bookings table
+                                        $request = $db->query('SELECT * FROM bookings'); // get elements from database
+                                        while ($bookings = $request->fetch()) { 
+                                            $id = $bookings['id'];
+                                            $date = $bookings['date'];
+                                            $restaurant = $bookings['restaurant'];
+                                            $time = $bookings['time'];
+                                            $name = $bookings['name'];
+                                            $email = $bookings['email'];
+                                            $telephone = $bookings['telephone'];
+                                            echo "<tr>";
+                                            echo "<td>$date</td>";
+                                            echo "<td>$restaurant</td>";
+                                            echo "<td>$time</td>";
+                                            echo "<td>$name</td>";
+                                            echo "<td>$email</td>";
+                                            echo "<td>$telephone</td>";
+                                            echo "<td><form method='post' action='backoffice.php'><button type='submit' name='removeBooking' value=$id class='btn-danger'>x</button></form></td>";
+                                            echo "</tr>";
+                                        }
+                                        $request->closeCursor(); // close database
                                     ?>
                                 </tbody>
                             </table>
@@ -250,7 +322,23 @@ session_start();
                                             echo "<script type='text/javascript'>function toggleGallery(){phpContact.classList.add('hidden');phpGallery.classList.remove('hidden');btnContact.classList.remove('active');btnBookings.classList.remove('active');btnGallery.classList.add('active');}toggleGallery();</script>";
                                             echo "<h4 class='text-left text-success'>Image removed.</h4>";
                                         }
-                                        include "php/generateGallery.php"; // generate gallery table
+                                        // generate gallery
+                                        $request = $db->query('SELECT * FROM gallery');
+                                        while ($gallery = $request->fetch()) {
+                                            $id = $gallery['id'];
+                                            $date = $gallery['date'];
+                                            $country = $gallery['country'];
+                                            $text = $gallery['text'];
+                                            $filename = $gallery['filename'];
+                                            echo "<tr>";
+                                            echo "<td>$date</td>";
+                                            echo "<td>$country</td>";
+                                            echo "<td>$text</td>";
+                                            echo "<td>$filename</td>";
+                                            echo "<td><form method='post' action='backoffice.php'><button type='submit' name='removeGallery' value=$id class='btn-danger'>x</button></form></td>";
+                                            echo "</tr>";
+                                        }
+                                        $request->closeCursor(); // close database
                                     ?>
                                 </tbody>
                             </table>
