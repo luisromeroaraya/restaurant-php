@@ -109,14 +109,21 @@
                         <h2 class="text-center">Gallery</h2>
                         <div class="row row-cols-1 row-cols-md-3 g-4">
                             <?php
-                                include "php/gallery.php";
-                                foreach($gallery as $image) {
-                                    $file = "gallery/".$image['file'];
-                                    $text = $image['text'];
-                                    $country = $image['country'];
+                                // open database
+                                try {
+                                    $db = new PDO('mysql:host=database;dbname=restaurant;charset=utf8', 'root', 'root');
+                                } catch (Exception $e) {
+                                    die('Erreur : ' . $e->getMessage());
+                                }
+                                $request = $db->query('SELECT * FROM gallery'); // get elements from database
+                                // show elements from database
+                                while ($gallery = $request->fetch()) {
+                                    $country = $gallery['country'];
+                                    $text = $gallery['text'];
+                                    $filename = "gallery/".$gallery['filename'];
                                     echo"   <div class='col'>
                                             <div class='card h-100'>
-                                            <a href=$file><img src=$file class='card-img-top' alt=$text></a>
+                                            <a href=$filename><img src=$filename class='card-img-top' alt=$text></a>
                                             <div class='card-body'>
                                             <h5 class='card-title'>$country</h5>
                                             <p class='card-text'>$text</p>
@@ -125,6 +132,7 @@
                                             </div>
                                         ";
                                 }
+                                $request->closeCursor(); // close database
                             ?>
                         </div>
                     </article>

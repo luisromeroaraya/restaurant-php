@@ -127,15 +127,16 @@ session_start();
                                             $name = htmlspecialchars($_POST['name']);
                                             $email = $_POST['email'];
                                             $message = htmlspecialchars($_POST['message']);
-                                            $request = $db->prepare('INSERT INTO contact(date, name, email, message) VALUES(?, ?, ?, ?)'); //prepare element
-                                            $request->execute(array($date, $name, $email, $message)); // put new element in database
+                                            $request = $db->prepare('INSERT INTO contact(date, name, email, message) VALUES(?, ?, ?, ?)'); //prepare add command
+                                            $request->execute(array($date, $name, $email, $message)); // add new element to database
                                             echo "<script type='text/javascript'>function toggleContact(){phpContact.classList.remove('hidden');btnContact.classList.add('active');btnBookings.classList.remove('active');btnGallery.classList.remove('active');}toggleContact();</script>";
                                             echo "<h4 class='text-left text-success'>Contact added.</h4>";
                                         }
                                         // IF removeContact button has been clicked
                                         if (isset($_POST['removeContact'])) {
                                             $id = $_POST['removeContact'];
-                                            $db->query("DELETE FROM contact WHERE id=$id"); //delete element
+                                            $request = $db->prepare('DELETE FROM contact WHERE id = ?'); //prepare delete command
+                                            $request->execute(array($id)); // delete element from database
                                             echo "<script type='text/javascript'>function toggleContact(){phpContact.classList.remove('hidden');btnContact.classList.add('active');btnBookings.classList.remove('active');btnGallery.classList.remove('active');}toggleContact();</script>";
                                             echo "<h4 class='text-left text-success'>Contact removed.</h4>";
                                         }
@@ -204,15 +205,16 @@ session_start();
                                             $name = htmlspecialchars($_POST['name']);
                                             $email = $_POST['email'];
                                             $telephone = $_POST['telephone'];
-                                            $request = $db->prepare('INSERT INTO bookings(date, restaurant, time, name, email, telephone) VALUES(?, ?, ?, ?, ?, ?)'); //prepare element
-                                            $request->execute(array($date, $restaurant, $time, $name, $email, $telephone)); // put new element in database
+                                            $request = $db->prepare('INSERT INTO bookings(date, restaurant, time, name, email, telephone) VALUES(?, ?, ?, ?, ?, ?)'); //prepare add command
+                                            $request->execute(array($date, $restaurant, $time, $name, $email, $telephone)); // add new element in database
                                             echo "<script type='text/javascript'>function toggleBookings(){phpContact.classList.add('hidden');phpBookings.classList.remove('hidden');btnContact.classList.remove('active');btnBookings.classList.add('active');btnGallery.classList.remove('active');}toggleBookings();</script>";
                                             echo "<h4 class='text-left text-success'>Booking added.</h4>";
                                         }
                                         // IF removeBooking button has been clicked
                                         if (isset($_POST['removeBooking'])) {
                                             $id = $_POST['removeBooking'];
-                                            $db->query("DELETE FROM bookings WHERE id=$id"); //delete element
+                                            $request = $db->prepare('DELETE FROM bookings WHERE id = ?'); //prepare delete command
+                                            $request->execute(array($id)); // delete element from database
                                             echo "<script type='text/javascript'>function toggleBookings(){phpContact.classList.add('hidden');phpBookings.classList.remove('hidden');btnContact.classList.remove('active');btnBookings.classList.add('active');btnGallery.classList.remove('active');}toggleBookings();</script>";
                                             echo "<h4 class='text-left text-success'>Booking removed.</h4>";
                                         }
@@ -257,7 +259,7 @@ session_start();
                                         <td><label for="file"></label></td>
                                         <td><input type="text" name="country" placeholder="Country" required></td>
                                         <td><input type="text" name="text" placeholder="Description" required></td>
-                                        <td><input type="file" name="file" id="file" required></td>
+                                        <td><input type="file" name="filename" id="filename" required></td>
                                         <td><button type="submit" name="addGallery" class='btn-success'>+</button></td>
                                     </form>
                                 </tr>
@@ -269,14 +271,14 @@ session_start();
                                         } catch (Exception $e) {
                                             die('Erreur : ' . $e->getMessage());
                                         }
-                                        // Upload file
+                                        // upload file
                                         if(isset($_POST["addGallery"])) {
                                             $target_dir = "gallery/";
-                                            $target_file = $target_dir . basename($_FILES["file"]["name"]);
+                                            $target_file = $target_dir . basename($_FILES["filename"]["name"]);
                                             $uploadOk = 1;
                                             $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
                                             // Check if image file is a actual image or fake image
-                                            $check = getimagesize($_FILES["file"]["tmp_name"]);
+                                            $check = getimagesize($_FILES["filename"]["tmp_name"]);
                                             if($check !== false) {
                                                 //echo "File is an image - " . $check["mime"] . ".";
                                                 $uploadOk = 1;
@@ -290,7 +292,7 @@ session_start();
                                                 $uploadOk = 0;
                                             }
                                             // Check file size
-                                            if ($_FILES["file"]["size"] > 500000) {
+                                            if ($_FILES["filename"]["size"] > 500000) {
                                                 echo "<h4 class='text-left text-danger'>Sorry, your file is too large.</h4>";
                                                 $uploadOk = 0;
                                             }
@@ -305,7 +307,7 @@ session_start();
                                                 echo "<h4 class='text-left text-danger'>Sorry, your file was not uploaded.</h4>";
                                             // if everything is ok, try to upload file
                                             } else {
-                                                if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
+                                                if (move_uploaded_file($_FILES["filename"]["tmp_name"], $target_file)) {
                                                     echo "<h4 class='text-left text-success'>Your file has been uploaded.</h4>";
                                                 } else {
                                                     echo "<h4 class='text-left text-danger'>Sorry, there was an error uploading your file.</h4>";
@@ -314,18 +316,21 @@ session_start();
                                             $date = date("Y-m-d");
                                             $country = htmlspecialchars($_POST['country']);
                                             $text = htmlspecialchars($_POST['text']);
-                                            $file = $_FILES['file']['name'];
-                                            $gallery[] = array("date" => $date, "country" => $country, "text" => $text, "file" => $file);
-                                            file_put_contents('php/gallery.php', "<?php\n\$gallery = ".var_export($gallery, true).";\n?>");
+                                            $filename = $_FILES['filename']['name'];
+                                            $request = $db->prepare('INSERT INTO gallery(date, country, text, filename) VALUES(?, ?, ?, ?)'); // prepare add command
+                                            $request->execute(array($date, $country, $text, $filename)); // add new element to database
                                             echo "<script type='text/javascript'>function toggleGallery(){phpContact.classList.add('hidden');phpGallery.classList.remove('hidden');btnContact.classList.remove('active');btnBookings.classList.remove('active');btnGallery.classList.add('active');}toggleGallery();</script>";
                                         }
                                         if (isset($_POST['removeGallery'])) {
-                                            $item = $_POST['item'];
-                                            $file = $gallery[$item]['file'];
-                                            unlink("gallery/".$file);
-                                            unset($gallery[$item]);
-                                            $gallery = array_values($gallery);
-                                            file_put_contents('php/gallery.php', "<?php\n\$gallery = ".var_export($gallery, true).";\n?>");
+                                            $id = $_POST['removeGallery'];
+                                            $request = $db->prepare('SELECT filename FROM gallery WHERE id = ?'); // prepare search command
+                                            $request->execute(array($id)); // search element in database
+                                            $image = $request->fetch();
+                                            $filename = $image['filename'];
+                                            $request->closeCursor();
+                                            unlink("gallery/".$filename); //delete image from folder
+                                            $request = $db->prepare('DELETE FROM gallery WHERE id = ?'); //prepare delete command
+                                            $request->execute(array($id)); // delete element from database
                                             echo "<script type='text/javascript'>function toggleGallery(){phpContact.classList.add('hidden');phpGallery.classList.remove('hidden');btnContact.classList.remove('active');btnBookings.classList.remove('active');btnGallery.classList.add('active');}toggleGallery();</script>";
                                             echo "<h4 class='text-left text-success'>Image removed.</h4>";
                                         }
@@ -342,7 +347,7 @@ session_start();
                                             echo "<td>$country</td>";
                                             echo "<td>$text</td>";
                                             echo "<td>$filename</td>";
-                                            echo "<td><form method='post' action='backoffice.php'><button type='submit' name='removeContact' value=$id class='btn-danger'>x</button></form></td>";
+                                            echo "<td><form method='post' action='backoffice.php'><button type='submit' name='removeGallery' value=$id class='btn-danger'>x</button></form></td>";
                                             echo "</tr>";
                                         }
                                         $request->closeCursor(); // close database
