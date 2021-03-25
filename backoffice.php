@@ -59,9 +59,9 @@ session_start();
                             //     $name = $users['password'];
                             // }
                             // $request->closeCursor(); // close database
-                            include "php/password.php";
+                            
                             // IF username/password doesn't exist or are wrong we show login form
-                            if ((!isset($_SESSION['username']) OR !isset($_SESSION['password'])) AND ($_POST['username'] != $username OR $_POST['password'] != $password)) {
+                            if ((!isset($_SESSION['username']) OR !isset($_SESSION['password'])) AND ($_POST['username'] != "admin" OR $_POST['password'] != "root")) {
                             
                                 // IF username/password are wrong we show ERROR
                                 if (isset($_POST['username']) OR isset($_POST['password'])) {
@@ -78,7 +78,7 @@ session_start();
                         <?php
                         }
                         // IF password OK we show the page
-                        elseif ((isset($_POST['username']) AND $_POST['username'] == "admin" AND isset($_POST['password']) AND $_POST['password'] ==  "root") OR (isset($_SESSION['username']) AND $_SESSION['username'] == $username AND isset($_SESSION['password']) AND $_SESSION['password'] ==  $password)) {
+                        elseif ((isset($_POST['username']) AND $_POST['username'] == "admin" AND isset($_POST['password']) AND $_POST['password'] ==  "root") OR (isset($_SESSION['username']) AND $_SESSION['username'] == "admin" AND isset($_SESSION['password']) AND $_SESSION['password'] ==  "root")) {
                             // We store the username and password if they don't exist
                             if (!isset($_SESSION['username']) OR !isset($_SESSION['password'])){
                                 $_SESSION['username'] = $_POST['username'];
