@@ -28,9 +28,9 @@
                     <div class="navbar-nav">
                         <a class="nav-item nav-link m-auto" href="index.html">Welcome</a>
                         <a class="nav-item nav-link m-auto" href="menu.html">Menu</a>
-                        <a class="nav-item nav-link m-auto active" aria-current="page" href="gallery.php">Gallery</a>
+                        <a class="nav-item nav-link m-auto" href="gallery.php">Gallery</a>
                         <a class="nav-item nav-link m-auto" href="restaurants.html">Restaurants</a>
-                        <a class="nav-item nav-link m-auto" href="contact.php">Contact</a>
+                        <a class="nav-item nav-link m-auto active" aria-current="page" href="contact.php">Contact</a>
                         <a class="nav-item nav-link m-auto" href="backoffice.php">Backoffice</a>
                     </div>
                 </div>
@@ -103,38 +103,56 @@
                 </div>
             </section>
 
-            <section class="container text-dark" id=middle>
-                <div class="row d-flex justify-content-center mb-4">
-                    <article class="col-12 col-md-10 mb-4" id=pictures>
-                        <h2 class="text-center">Gallery</h2>
-                        <div class="row row-cols-1 row-cols-md-3 g-4">
-                            <?php
-                                // open database
-                                try {
-                                    $db = new PDO('mysql:host=database;dbname=restaurant;charset=utf8', 'root', 'root');
-                                } catch (Exception $e) {
-                                    die('Erreur : ' . $e->getMessage());
-                                }
-                                $request = $db->query('SELECT * FROM gallery'); // get elements from database
-                                // show elements from database
-                                while ($gallery = $request->fetch()) {
-                                    $country = $gallery['country'];
-                                    $text = $gallery['text'];
-                                    $filename = "gallery/".$gallery['filename'];
-                                    echo"   <div class='col'>
-                                            <div class='card h-100'>
-                                            <a href=$filename><img src=$filename class='card-img-top' alt=$text></a>
-                                            <div class='card-body'>
-                                            <h5 class='card-title'>$country</h5>
-                                            <p class='card-text'>$text</p>
-                                            </div>
-                                            </div>
-                                            </div>
-                                        ";
-                                }
-                                $request->closeCursor(); // close database
-                            ?>
-                        </div>
+            <section class="container" id=middle>
+                <article class="row text-dark p-2 d-flex justify-content-around" id="reservation">
+                    <h2 class="text-center">Reservation</h2>
+                    <?php
+                        // open database
+                        include "../db.php";
+                        include "php/readForms.php";
+                    ?>
+                    <article class="col-12 col-md-5 mb-3">
+                        <h4>Book a table:</h4>
+                        <form method="post" action="contact.php">
+                            <div class="mb-1">
+                                <input class="form-control" type="date" name="date" id="date" min="2021-03-01" required>
+                            </div>
+                            <select class="form-select mb-2" name="restaurant" aria-label="Choose Restaurant" id="restaurant" required>
+                                <option value="">Choose your restaurant:</option>
+                                <option value="Brussels">Brussels</option>
+                                <option value="Antwerp">Antwerp</option>
+                                <option value="Liège">Liège</option>
+                            </select>
+                            <div class="mb-1">
+                                <input class="form-control" type="time" name="time" id="time" min="11:00" max="22:30" required>
+                            </div>
+                            <div class="mb-1">
+                                <input class="form-control" type="text" name="name" placeholder="Name e.g: John" id="name" required>
+                            </div>
+                            <div class="mb-1">
+                                <input class="form-control" type="email" name="email" placeholder="Email e.g: johndoe@mail.com" id="email" required>
+                            </div>
+                            <div class="mb-1">
+                                <input class="form-control" type="tel" name="telephone" placeholder="Telephone e.g: 0123456789" id="telephone" pattern="[0][1-9]{1}[0-9]{8}"required>
+                            </div>
+                            <button type="submit" name="addBooking" class="btn btn-primary">Submit</button>
+                          </form>
+                    </article>
+                    <article class="col-12 col-md-5 mb-3">
+                        <h4>Leave us a comment:</h4>
+                        <form method="post" action="contact.php">
+                            <div class="mb-1">
+                                <input class="form-control" type="text" name="name" placeholder="Name e.g: John" id="name" required>
+                            </div>
+                            <div class="mb-1">
+                                <input class="form-control" type="email" name="email" placeholder="Email e.g: johndoe@mail.com" id="email" required>
+                            </div>
+                            <div class="mb-1"></div>
+                                <textarea class="form-control" rows="4" name="message" placeholder="Leave us your comment..." id="comment" required></textarea>
+                            </div>
+                            <div class="mb-1"></div>
+                                <button type="submit" name="addContact" class="btn btn-primary">Submit</button>
+                          </form>
                     </article>
                 </div>
             </section>
@@ -161,6 +179,5 @@
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js" integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj" crossorigin="anonymous"></script>
-
     </body>
 </html>
