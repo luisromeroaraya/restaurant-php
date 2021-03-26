@@ -48,17 +48,23 @@ session_start();
                         <h2>Backoffice</h2>
                         <?php
                             include "../db.php"; // open database
-                            // IF clicked on LOGIN button
-                            if (isset($_POST['username']) AND isset($_POST['password'])) {
+                            $isPasswordCorrect = false;
+                            // IF clicked on LOGIN button we verify if password is OK
+                            if (isset($_POST['login'])) {
                                 $username = $_POST['username'];
                                 $password = $_POST['password'];
                                 $request = $db->query("SELECT password FROM users WHERE username = '$username' ");  // search password corresponding to $username
                                 $result = $request->fetch(); // get password corresponding to $username from database
                                 $isPasswordCorrect = ($password == $result['password']); // compares $password with $username password
                                 $request->closeCursor(); // close database
+                                // if user/password OK we store the username and password
+                                if ($isPasswordCorrect) {
+                                    $_SESSION['username'] = $username;
+                                    $_SESSION['password'] = $password;
+                                }
                             }
                             // IF username/password already exist in $_SESSION
-                            if (isset($_SESSION['username']) AND isset($_SESSION['password'])) {
+                            elseif (isset($_SESSION['username']) AND isset($_SESSION['password'])) {
                                 $username = $_SESSION['username'];
                                 $password = $_SESSION['password'];
                                 $request = $db->query("SELECT password FROM users WHERE username = '$username'");  // search password corresponding to $username
@@ -67,8 +73,7 @@ session_start();
                                 $request->closeCursor(); // close database
                             }
                             // IF username/password don't exist or are wrong we show login form
-                            if ((!isset($_SESSION['username']) OR !isset($_SESSION['password'])) AND (!isset($_POST['username']) OR !isset($_POST['password']) OR !$isPasswordCorrect)) {
-                            
+                            if (!$isPasswordCorrect) {
                                 // IF username/password exist we show ERROR
                                 if (isset($_POST['username']) OR isset($_POST['password'])) {
                                     echo "<strong>Wrong username/password</strong>";
@@ -85,11 +90,6 @@ session_start();
                         }
                         // IF password OK we show the page
                         elseif ($isPasswordCorrect) {
-                            // We store the username and password if they don't exist
-                            if (!isset($_SESSION['username']) OR !isset($_SESSION['password'])){
-                                $_SESSION['username'] = $_POST['username'];
-                                $_SESSION['password'] = $_POST['password'];
-                            }
                         ?>
                         <div class="row">
                             <div class="col">
