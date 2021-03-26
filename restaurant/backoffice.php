@@ -47,21 +47,27 @@ session_start();
                     <div class="row p-2 d-flex justify-content-center text-center mx-auto">
                         <h2>Backoffice</h2>
                         <?php
-                            // try {
-                            //     $db = new PDO('mysql:host=database;dbname=restaurant;charset=utf8', 'root', 'root'); // open database
-                            // } catch (Exception $e) {
-                            //     die('Erreur : ' . $e->getMessage());
-                            // }
-                            // $request = $db->query('SELECT * FROM users'); // get elements from database
-                            // while ($users = $request->fetch()) {
-                            //     $id = $users['id'];
-                            //     $date = $users['username'];
-                            //     $name = $users['password'];
-                            // }
-                            // $request->closeCursor(); // close database
-                            
+                            include "../db.php"; // open database
+                            // IF clicked on LOGIN button
+                            if (isset($_POST['username']) AND isset($_POST['password'])) {
+                                $username = $_POST['username'];
+                                $password = $_POST['password'];
+                                $request = $db->query("SELECT password FROM users WHERE username = '$username' ");  // search password corresponding to $username
+                                $result = $request->fetch(); // get password corresponding to $username from database
+                                $isPasswordCorrect = ($password == $result['password']); // compares $password with $username password
+                                $request->closeCursor(); // close database
+                            }
+                            // IF username/password already exist in $_SESSION
+                            if (isset($_SESSION['username']) AND isset($_SESSION['password'])) {
+                                $username = $_SESSION['username'];
+                                $password = $_SESSION['password'];
+                                $request = $db->query("SELECT password FROM users WHERE username = '$username'");  // search password corresponding to $username
+                                $result = $request->fetch(); // get password corresponding to $username from database
+                                $isPasswordCorrect = ($password == $result['password']); // compares $password with $username password
+                                $request->closeCursor(); // close database
+                            }
                             // IF username/password don't exist or are wrong we show login form
-                            if ((!isset($_SESSION['username']) OR !isset($_SESSION['password'])) AND (!isset($_POST['username']) OR $_POST['username'] != "admin" OR !isset($_POST['password']) OR $_POST['password'] != "root")) {
+                            if ((!isset($_SESSION['username']) OR !isset($_SESSION['password'])) AND (!isset($_POST['username']) OR !isset($_POST['password']) OR !$isPasswordCorrect)) {
                             
                                 // IF username/password exist we show ERROR
                                 if (isset($_POST['username']) OR isset($_POST['password'])) {
@@ -78,7 +84,7 @@ session_start();
                         <?php
                         }
                         // IF password OK we show the page
-                        elseif ((isset($_POST['username']) AND $_POST['username'] == "admin" AND isset($_POST['password']) AND $_POST['password'] ==  "root") OR (isset($_SESSION['username']) AND $_SESSION['username'] == "admin" AND isset($_SESSION['password']) AND $_SESSION['password'] ==  "root")) {
+                        elseif ($isPasswordCorrect) {
                             // We store the username and password if they don't exist
                             if (!isset($_SESSION['username']) OR !isset($_SESSION['password'])){
                                 $_SESSION['username'] = $_POST['username'];
@@ -138,12 +144,12 @@ session_start();
                                         }
                                         // generate contact table
                                         $request = $db->query('SELECT * FROM contact'); // get elements from database
-                                        while ($contacts = $request->fetch()) {
-                                            $id = $contacts['id'];
-                                            $date = $contacts['date'];
-                                            $name = $contacts['name'];
-                                            $email = $contacts['email'];
-                                            $message = $contacts['message'];
+                                        while ($contact = $request->fetch()) {
+                                            $id = $contact['id'];
+                                            $date = $contact['date'];
+                                            $name = $contact['name'];
+                                            $email = $contact['email'];
+                                            $message = $contact['message'];
                                             echo "<tr>";
                                             echo "<td>$date</td>";
                                             echo "<td>$name</td>";
@@ -212,14 +218,14 @@ session_start();
                                         }
                                         // generate bookings table
                                         $request = $db->query('SELECT * FROM bookings'); // get elements from database
-                                        while ($bookings = $request->fetch()) { 
-                                            $id = $bookings['id'];
-                                            $date = $bookings['date'];
-                                            $restaurant = $bookings['restaurant'];
-                                            $time = $bookings['time'];
-                                            $name = $bookings['name'];
-                                            $email = $bookings['email'];
-                                            $telephone = $bookings['telephone'];
+                                        while ($booking = $request->fetch()) { 
+                                            $id = $booking['id'];
+                                            $date = $booking['date'];
+                                            $restaurant = $booking['restaurant'];
+                                            $time = $booking['time'];
+                                            $name = $booking['name'];
+                                            $email = $booking['email'];
+                                            $telephone = $booking['telephone'];
                                             echo "<tr>";
                                             echo "<td>$date</td>";
                                             echo "<td>$restaurant</td>";
@@ -324,12 +330,12 @@ session_start();
                                         }
                                         // generate gallery
                                         $request = $db->query('SELECT * FROM gallery');
-                                        while ($gallery = $request->fetch()) {
-                                            $id = $gallery['id'];
-                                            $date = $gallery['date'];
-                                            $country = $gallery['country'];
-                                            $text = $gallery['text'];
-                                            $filename = $gallery['filename'];
+                                        while ($image = $request->fetch()) {
+                                            $id = $image['id'];
+                                            $date = $image['date'];
+                                            $country = $image['country'];
+                                            $text = $image['text'];
+                                            $filename = $image['filename'];
                                             echo "<tr>";
                                             echo "<td>$date</td>";
                                             echo "<td>$country</td>";

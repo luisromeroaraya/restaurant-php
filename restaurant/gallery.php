@@ -112,10 +112,10 @@
                                 include "../db.php"; // open database
                                 $request = $db->query('SELECT * FROM gallery'); // get elements from database
                                 // show elements from database
-                                while ($gallery = $request->fetch()) {
-                                    $country = $gallery['country'];
-                                    $text = $gallery['text'];
-                                    $filename = "gallery/".$gallery['filename'];
+                                while ($image = $request->fetch()) {
+                                    $country = $image['country'];
+                                    $text = $image['text'];
+                                    $filename = "gallery/".$image['filename'];
                                     echo"   <div class='col'>
                                             <div class='card h-100'>
                                             <a href=$filename><img src=$filename class='card-img-top' alt=$text></a>
